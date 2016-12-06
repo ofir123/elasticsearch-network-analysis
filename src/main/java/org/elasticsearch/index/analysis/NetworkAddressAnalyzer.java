@@ -17,13 +17,15 @@ public final class NetworkAddressAnalyzer extends Analyzer {
 	private final String MAC_PATTERN2 = "([a-fA-F0-9][a-fA-F0-9]):([a-fA-F0-9][a-fA-F0-9]):([a-fA-F0-9][a-fA-F0-9]):([a-fA-F0-9][a-fA-F0-9]):([a-fA-F0-9][a-fA-F0-9]):([a-fA-F0-9][a-fA-F0-9])";
 	private final String MAC_PATTERN3 = "([a-fA-F0-9][a-fA-F0-9])_([a-fA-F0-9][a-fA-F0-9])_([a-fA-F0-9][a-fA-F0-9])_([a-fA-F0-9][a-fA-F0-9])_([a-fA-F0-9][a-fA-F0-9])_([a-fA-F0-9][a-fA-F0-9])";
 	private final String MAC_PATTERN4 = "([a-fA-F0-9][a-fA-F0-9])\\.([a-fA-F0-9][a-fA-F0-9])\\.([a-fA-F0-9][a-fA-F0-9])\\.([a-fA-F0-9][a-fA-F0-9])\\.([a-fA-F0-9][a-fA-F0-9])\\.([a-fA-F0-9][a-fA-F0-9])";
+	private final String MAC_PATTERN5 = "([a-fA-F0-9][a-fA-F0-9])([a-fA-F0-9][a-fA-F0-9]):([a-fA-F0-9][a-fA-F0-9])([a-fA-F0-9][a-fA-F0-9]):([a-fA-F0-9][a-fA-F0-9])([a-fA-F0-9][a-fA-F0-9])";
+	private final String MAC_PATTERN6 = "([a-fA-F0-9][a-fA-F0-9])([a-fA-F0-9][a-fA-F0-9])\\.([a-fA-F0-9][a-fA-F0-9])([a-fA-F0-9][a-fA-F0-9])\\.([a-fA-F0-9][a-fA-F0-9])([a-fA-F0-9][a-fA-F0-9])";
 	
 	private final Pattern pattern;
 	private final int group;
 	
     public NetworkAddressAnalyzer(Settings settings) {
-		String sPattern = settings.get("pattern", String.format("(?:%s)|(?:%s)|(?:%s)|(?:%s)|(?:%s)", 
-				IP_PATTERN, MAC_PATTERN1, MAC_PATTERN2, MAC_PATTERN3, MAC_PATTERN4));
+		String sPattern = settings.get("pattern", String.format("(?:%s)|(?:%s)|(?:%s)|(?:%s)|(?:%s)|(?:%s)|(?:%s)", 
+				IP_PATTERN, MAC_PATTERN1, MAC_PATTERN2, MAC_PATTERN3, MAC_PATTERN4, MAC_PATTERN5, MAC_PATTERN6));
 
 		this.pattern = Regex.compile(sPattern, settings.get("flags"));
 		this.group = settings.getAsInt("group", 0);

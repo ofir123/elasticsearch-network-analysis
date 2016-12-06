@@ -32,7 +32,7 @@
     </scm>
 
     <properties>
-        <elasticsearch.version>2.3.5</elasticsearch.version>
+        <elasticsearch.version>2.3.4</elasticsearch.version>
         <lucene.version>5.5.0</lucene.version>
 		<elasticsearch.assembly.descriptor>${project.basedir}/src/main/resources/plugin-metadata/plugin-assembly.xml</elasticsearch.assembly.descriptor>
         <elasticsearch.plugin.classname>org.elasticsearch.plugin.analysis.networkaddress.AnalysisNetworkAddressPlugin</elasticsearch.plugin.classname>
