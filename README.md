@@ -1,16 +1,16 @@
-NetworkAddress Analysis for ElasticSearch
+Network Address Analysis for ElasticSearch
 =========================================
 
 
     --------------------------------------------------
     | NetworkAddress Analysis Plugin | ElasticSearch |
     --------------------------------------------------
-    | 2.0                            | 2.3.4         |
+    | 5.0                            | 5.3.3         |
     --------------------------------------------------
 
 
-The plugin includes a `pathkeywords` analyzer, a `networkaddress` analyzer , a `partialnetworkaddress` analyzer, a `fullnetworkaddress` analyzer 
-and an `IncrementalCaptureGroupTokenFilter` token-filter.
+The plugin includes a `path_keywords` analyzer, a `network_address` analyzer , a `partial_network_address` analyzer, a `full_network_address` analyzer 
+and an `incremental_capture_group_token_filter` token-filter.
 
 
 1. Build
@@ -29,7 +29,7 @@ and an `IncrementalCaptureGroupTokenFilter` token-filter.
 
 	To test the plugin, the `_analyze` endpoint can be used:
 
-		curl -XPOST http://localhost:9200/_analyze?pretty=1&analyzer=networkaddress -d '
+		curl -XPOST http://localhost:9200/_analyze?pretty=1&analyzer=network_address -d '
 		computer_name = "ABC"                                                   
 		mac_address = AA:BB:CC:DD:EE:FF                                         
 		SMBInfo for 192.168.0.1:                                               
@@ -74,7 +74,7 @@ and an `IncrementalCaptureGroupTokenFilter` token-filter.
 							# Our networkaddress custom analysis.
 							"network_address": {
 								"type": "string",
-								"analyzer": "networkaddress"
+								"analyzer": "network_address"
 							}
 						}
 					},
@@ -99,23 +99,23 @@ and an `IncrementalCaptureGroupTokenFilter` token-filter.
 		  }
 		}
 
-	The `partialnetworkaddress` can be used at query time, to search for partial addresses (note that this only affacts the *query* anlysis, not the *document's*):
+	The `partial_network_address` can be used at query time, to search for partial addresses (note that this only affacts the *query* anlysis, not the *document's*):
 
 		{
 		  "query": {
 			"match": {
 			  "data.network_address": {
 				"query": "AA:BB:CC",
-				"analyzer": "partialnetworkaddress",
+				"analyzer": "partial_network_address",
 				"type": "phrase"
 			  }
 			}
 		  }
 		}
 		
-	The `fullnetworkaddress` can be used as an analyzer, to search for all the network addresses inside a given document.
+	The `full_network_address` can be used as an analyzer, to search for all the network addresses inside a given document.
 
-		network_addresses = self._es.indices.analyze(index=index_name, analyzer='fullnetworkaddress', body=document).get('tokens')
+		network_addresses = self._es.indices.analyze(index=index_name, analyzer='full_network_address', body=document).get('tokens')
 
 For any more questions or issues, please [e-mail me](mailto:ofirbrukner@gmail.com).
 

@@ -1,32 +1,31 @@
 package org.elasticsearch.plugin.analysis.networkaddress;
 
-import java.util.Collection;
-import java.util.Collections;
-
-import org.elasticsearch.common.inject.Module;
-import org.elasticsearch.index.analysis.AnalysisModule;
-import org.elasticsearch.index.analysis.NetworkAddressAnalysisBinderProcessor;
-import org.elasticsearch.indices.analysis.IndicesAnalysisModule;
+import org.apache.lucene.analysis.Analyzer;
+import org.elasticsearch.index.analysis.*;
+import org.elasticsearch.indices.analysis.AnalysisModule;
+import org.elasticsearch.plugins.AnalysisPlugin;
 import org.elasticsearch.plugins.Plugin;
 
-public class AnalysisNetworkAddressPlugin extends Plugin {
+import java.util.HashMap;
+import java.util.Map;
 
-    @Override
-    public String name() {
-        return "elasticsearch-network-analysis";
+
+public class AnalysisNetworkAddressPlugin extends Plugin implements AnalysisPlugin {
+
+	@Override
+    public Map<String, AnalysisModule.AnalysisProvider<org.elasticsearch.index.analysis.TokenFilterFactory>> getTokenFilters() {
+        Map<String, AnalysisModule.AnalysisProvider<org.elasticsearch.index.analysis.TokenFilterFactory>> extra = new HashMap<>();
+        extra.put("incremental_capture_group", IncrementalCaptureGroupTokenFilterFactory::new);
+        return extra;
     }
 
     @Override
-    public String description() {
-        return "";
-    }
-    
-    @Override
-    public Collection<Module> nodeModules() {
-        return Collections.<Module>singletonList(new IndicesAnalysisModule());
-    }
-
-    public void onModule(AnalysisModule module) {
-        module.addProcessor(new NetworkAddressAnalysisBinderProcessor());
+    public Map<String, AnalysisModule.AnalysisProvider<AnalyzerProvider<? extends Analyzer>>> getAnalyzers() {
+        Map<String, AnalysisModule.AnalysisProvider<AnalyzerProvider<? extends Analyzer>>> extra = new HashMap<>();
+		extra.put("network_address", NetworkAddressAnalyzerProvider::new);
+		extra.put("partial_network_address", PartialNetworkAddressAnalyzerProvider::new);
+		extra.put("full_network_address", FullNetworkAddressAnalyzerProvider::new);
+		extra.put("path_keywords", PathKeywordsAnalyzerProvider::new);
+		return extra;
     }
 }
