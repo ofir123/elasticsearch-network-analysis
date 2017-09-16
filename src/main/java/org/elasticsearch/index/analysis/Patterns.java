@@ -18,20 +18,18 @@ public class Patterns {
         return combinePatterns(Collections.nCopies(count, base), separator);
     }
 
-    public static String combinePatterns(List<String> patterns, String separator) {
-        return Joiner.on(separator).join(patterns.stream()
-                                                 .map(Patterns::toNonCapturingGroup)
-                                                 .collect(Collectors.toList()));
-    }
-
     public static String combinePatterns(String... patterns) {
         return combinePatterns(Lists.newArrayList(patterns));
     }
 
     public static String combinePatterns(List<String> patterns) {
-        return Joiner.on("|").join(patterns.stream()
-                                           .map(Patterns::toNonCapturingGroup)
-                                           .collect(Collectors.toList()));
+        return combinePatterns(patterns, "|");
+    }
+
+    public static String combinePatterns(List<String> patterns, String separator) {
+        return Joiner.on(separator).join(patterns.stream()
+                                                 .map(Patterns::toNonCapturingGroup)
+                                                 .collect(Collectors.toList()));
     }
 
     public static String toNonCapturingGroup(String pattern) {

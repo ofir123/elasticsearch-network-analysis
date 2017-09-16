@@ -10,7 +10,7 @@ For example, it'd split `127.0` to `127` and `0`; it'll also output `127` for `1
 - `incremental_capture_group_token_filter`
 - `path_keywords` analyzer. Splits path-like strings.  
 
-## Installing
+## Installation
 - Download a release zip from the [releases page](https://github.com/matan129/elasticsearch-network-analysis/releases) matching your ES version
 - Run `bin/elasticsearch-plugin install file://<path to zip>` 
 - Restart Elasticsearch 
