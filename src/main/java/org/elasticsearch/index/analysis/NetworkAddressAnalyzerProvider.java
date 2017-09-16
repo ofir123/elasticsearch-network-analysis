@@ -5,13 +5,14 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.IndexSettings;
 
-
 public class NetworkAddressAnalyzerProvider extends AbstractIndexAnalyzerProvider<NetworkAddressAnalyzer> {
 
     private final NetworkAddressAnalyzer analyzer;
 
     @Inject
-    public NetworkAddressAnalyzerProvider(IndexSettings indexSettings, Environment env, String name, Settings settings) {
+    @SuppressWarnings("unused")
+    public NetworkAddressAnalyzerProvider(IndexSettings indexSettings, Environment env, String name,
+                                          Settings settings) {
         super(indexSettings, name, settings);
         analyzer = new NetworkAddressAnalyzer(settings);
     }
