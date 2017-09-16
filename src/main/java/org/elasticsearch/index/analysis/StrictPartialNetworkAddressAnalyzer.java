@@ -13,7 +13,7 @@ import static org.elasticsearch.index.analysis.Patterns.*;
  * a network address parts. For example:
  * "10" -> no tokens
  * "10.0" -> "10", "0"
- * "AA::BB -> "AA", "BB"
+ * "AA:BB -> "AA", "BB"
  */
 public final class StrictPartialNetworkAddressAnalyzer extends BasePatternAnalyzer {
 
