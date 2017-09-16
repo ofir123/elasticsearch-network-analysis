@@ -9,7 +9,7 @@ import org.elasticsearch.plugins.Plugin;
 
 import java.util.Map;
 
-public class AnalysisNetworkAddressPlugin extends Plugin implements AnalysisPlugin {
+public class NetworkAddressPathAnalysisPlugin extends Plugin implements AnalysisPlugin {
 
     @Override
     public Map<String, AnalysisProvider<TokenFilterFactory>> getTokenFilters() {

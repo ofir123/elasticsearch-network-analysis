@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<description>An Elasticsearch plugin for network address analysis</description>
+	<description>Elasticsearch plugin for network address and path analysis</description>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.matan129</groupId>
-    <artifactId>elasticsearch-network-analysis</artifactId>
+    <artifactId>elasticsearch-network-path-analysis</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
@@ -21,7 +21,7 @@
         <elasticsearch.version>5.5.2</elasticsearch.version>
         <lucene.version>6.6.0</lucene.version>
 		<elasticsearch.assembly.descriptor>${project.basedir}/src/main/resources/plugin-metadata/plugin-assembly.xml</elasticsearch.assembly.descriptor>
-        <elasticsearch.plugin.classname>org.elasticsearch.plugin.analysis.networkaddress.AnalysisNetworkAddressPlugin</elasticsearch.plugin.classname>
+        <elasticsearch.plugin.classname>org.elasticsearch.plugin.analysis.networkaddress.NetworkAddressPathAnalysisPlugin</elasticsearch.plugin.classname>
         <elasticsearch.plugin.name>elasticsearch-network-analysis</elasticsearch.plugin.name>
         <elasticsearch.plugin.site>false</elasticsearch.plugin.site>
         <elasticsearch.plugin.jvm>true</elasticsearch.plugin.jvm>
