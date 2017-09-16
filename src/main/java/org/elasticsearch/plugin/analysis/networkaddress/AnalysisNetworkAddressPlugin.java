@@ -14,17 +14,17 @@ public class AnalysisNetworkAddressPlugin extends Plugin implements AnalysisPlug
     @Override
     public Map<String, AnalysisProvider<TokenFilterFactory>> getTokenFilters() {
         return ImmutableMap.<String, AnalysisProvider<TokenFilterFactory>>builder()
-                .put("incremental_capture_group", IncrementalCaptureGroupTokenFilterFactory::new)
+                .put(IncrementalCaptureGroupTokenFilter.NAME, IncrementalCaptureGroupTokenFilterFactory::new)
                 .build();
     }
 
     @Override
     public Map<String, AnalysisProvider<AnalyzerProvider<? extends Analyzer>>> getAnalyzers() {
         return ImmutableMap.<String, AnalysisProvider<AnalyzerProvider<? extends Analyzer>>>builder()
-                .put("network_address", NetworkAddressAnalyzerProvider::new)
-                .put("partial_network_address", PartialNetworkAddressAnalyzerProvider::new)
-                .put("full_network_address", FullNetworkAddressAnalyzerProvider::new)
-                .put("path_keywords", PathKeywordsAnalyzerProvider::new)
+                .put(NetworkAddressAnalyzer.NAME, NetworkAddressAnalyzerProvider::new)
+                .put(PartialNetworkAddressAnalyzer.NAME, PartialNetworkAddressAnalyzerProvider::new)
+                .put(FullNetworkAddressAnalyzer.NAME, FullNetworkAddressAnalyzerProvider::new)
+                .put(PathKeywordsAnalyzer.NAME, PathKeywordsAnalyzerProvider::new)
                 .build();
     }
 }

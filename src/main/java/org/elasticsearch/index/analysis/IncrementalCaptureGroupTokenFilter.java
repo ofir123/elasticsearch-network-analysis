@@ -5,10 +5,6 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apache.lucene.util.CharsRefBuilder;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.env.Environment;
-import org.elasticsearch.index.IndexSettings;
-import org.elasticsearch.indices.analysis.AnalysisModule;
 
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -19,6 +15,8 @@ import java.util.regex.Pattern;
  * TODO: clarify stuff here.
  */
 public final class IncrementalCaptureGroupTokenFilter extends TokenFilter {
+
+    public static final String NAME = "incremental_capture_group";
 
     private final CharTermAttribute charTermAttr = addAttribute(CharTermAttribute.class);
     private final PositionIncrementAttribute posAttr = addAttribute(PositionIncrementAttribute.class);
@@ -31,8 +29,8 @@ public final class IncrementalCaptureGroupTokenFilter extends TokenFilter {
     private int currentMatcher;
 
     /**
-     * @param input            the input {@link TokenStream}
-     * @param patterns         an array of {@link Pattern} objects to match against each token
+     * @param input    the input {@link TokenStream}
+     * @param patterns an array of {@link Pattern} objects to match against each token
      */
     public IncrementalCaptureGroupTokenFilter(TokenStream input, Pattern... patterns) {
         super(input);
