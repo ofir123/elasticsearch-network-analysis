@@ -1,7 +1,12 @@
 Network Address and Path Analysis for Elasticsearch
 =========================================
-
-## This plugin includes the following
+[![Develop Travis Status](https://img.shields.io/travis/matan129/elasticsearch-network-analysis/develop.svg)](https://travis-ci.org/matan129/elasticsearch-network-analysis) 
+[![GitHub release](https://img.shields.io/github/release/matan129/elasticsearch-network-analysis.svg)](https://github.com/matan129/elasticsearch-network-analysis/releases) 
+[![Pull Requests](https://img.shields.io/github/issues-pr-raw/matan129/elasticsearch-network-analysis.svg)](https://github.com/matan129/elasticsearch-network-analysis/pulls)
+[![Project Issues](https://img.shields.io/github/issues-raw/matan129/elasticsearch-network-analysis.svg)](https://github.com/matan129/elasticsearch-network-analysis/issues)
+ 
+ 
+## Includes
 
 - `network_address` analyzer - outputs network address (IPv4/MAC) parts. For example, it'd split `127.0.0.1` to `127`, `0`, `0` and `1`.
 - `partial_network_address` analyzer - acts like the previous analyzer, but will handle anything that looks like a part of a network address.
