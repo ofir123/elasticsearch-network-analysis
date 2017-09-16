@@ -23,6 +23,7 @@ public class NetworkAddressPathAnalysisPlugin extends Plugin implements Analysis
         return ImmutableMap.<String, AnalysisProvider<AnalyzerProvider<? extends Analyzer>>>builder()
                 .put(NetworkAddressAnalyzer.NAME, NetworkAddressAnalyzerProvider::new)
                 .put(PartialNetworkAddressAnalyzer.NAME, PartialNetworkAddressAnalyzerProvider::new)
+                .put(StrictPartialNetworkAddressAnalyzer.NAME, StrictPartialNetworkAddressAnalyzerProvider::new)
                 .put(FullNetworkAddressAnalyzer.NAME, FullNetworkAddressAnalyzerProvider::new)
                 .put(PathKeywordsAnalyzer.NAME, PathKeywordsAnalyzerProvider::new)
                 .build();

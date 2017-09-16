@@ -19,7 +19,7 @@ public abstract class BaseAnalyzerTest extends ESTestCase {
         List<String> actualTokens = runAnalysis(source, analyzer);
 
         // Due to poor imports of ESTestCase...
-        org.assertj.core.api.Assertions.assertThat(actualTokens).containsExactly(expectedTokens);
+        org.assertj.core.api.Assertions.assertThat(expectedTokens).containsExactlyElementsOf(actualTokens);
     }
 
     private static Analyzer createTestAnalyzer(String analyzerName) throws IOException {
@@ -34,8 +34,8 @@ public abstract class BaseAnalyzerTest extends ESTestCase {
         TokenStream ts = analyzer.tokenStream("test", source);
         CharTermAttribute term = ts.addAttribute(CharTermAttribute.class);
         ts.reset();
-        List<String> actualTokens = Lists.newArrayList();
 
+        List<String> actualTokens = Lists.newArrayList();
         while (ts.incrementToken()) {
             actualTokens.add(term.toString());
         }

@@ -18,6 +18,10 @@ public class Patterns {
         return combinePatterns(Collections.nCopies(count, base), separator);
     }
 
+    public static String rawRepeat(String base, String separator, int count) {
+        return rawCombinePatterns(Collections.nCopies(count, base), separator);
+    }
+
     public static String combinePatterns(String... patterns) {
         return combinePatterns(Lists.newArrayList(patterns));
     }
@@ -27,9 +31,14 @@ public class Patterns {
     }
 
     public static String combinePatterns(List<String> patterns, String separator) {
-        return Joiner.on(separator).join(patterns.stream()
-                                                 .map(Patterns::toNonCapturingGroup)
-                                                 .collect(Collectors.toList()));
+        return rawCombinePatterns(patterns.stream()
+                                          .map(Patterns::toNonCapturingGroup)
+                                          .collect(Collectors.toList()),
+                                  separator);
+    }
+
+    public static String rawCombinePatterns(List<String> patterns, String separator) {
+        return Joiner.on(separator).join(patterns);
     }
 
     public static String toNonCapturingGroup(String pattern) {

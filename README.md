@@ -23,10 +23,11 @@ For example, it'd split `127.0` to `127` and `0`; it'll also output `127` for `1
 ## Usage
 
 After installing, you may tell ES to use the analyzers listed above in mappings and queries.
-To test the analyzers, the `_analyze` endpoint can be used. For instance
+To test the analyzers, the `_analyze` endpoint can be used:
 
-    curl -XPOST http://<es_host>:9200/_analyze?&analyzer=network_address -d'
+    curl -XPOST http://<es_host>:9200/_analyze?pretty -d'
     {
+        "analyzer": "network_address",
         "text": "AA:BB:CC:DD:EE:FF"
     }'
     
