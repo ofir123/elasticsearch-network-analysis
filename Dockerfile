@@ -4,5 +4,4 @@ COPY "target/releases/*.zip" "/opt/plugin.zip"
 RUN ["bin/elasticsearch-plugin", "install", "file:///opt/plugin.zip"]
 
 # This Docker image is meant for plugin testing only
-ENV "xpack.security.enabled" "false"
-
+ENV xpack.security.enabled "false"
