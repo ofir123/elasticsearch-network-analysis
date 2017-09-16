@@ -6,7 +6,7 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.Index;
-import org.elasticsearch.plugin.analysis.networkaddress.AnalysisNetworkAddressPlugin;
+import org.elasticsearch.plugin.analysis.networkaddress.NetworkAddressPathAnalysisPlugin;
 import org.elasticsearch.test.ESTestCase;
 
 import java.io.IOException;
@@ -25,7 +25,7 @@ public abstract class BaseAnalyzerTest extends ESTestCase {
     private static Analyzer createTestAnalyzer(String analyzerName) throws IOException {
         TestAnalysis analysis = createTestAnalysis(new Index("test", "_na_"),
                                                    Settings.EMPTY,
-                                                   new AnalysisNetworkAddressPlugin());
+                                                   new NetworkAddressPathAnalysisPlugin());
 
         return analysis.indexAnalyzers.get(analyzerName).analyzer();
     }

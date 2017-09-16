@@ -3,11 +3,16 @@ jdk: oraclejdk8
 install: true
 sudo: false
 
+before_deploy:
+  - mvn package
+
 deploy:
   provider: releases
   api_key:
     secure: rqnGf6B8JfbocFdV1qfRBVMLjAEbTXz/tdpQ91vl2jIBdcxdSgCarw2qvE85PAsO43P5aNicF6SqGtPzGotcOXkCQZGpIR9en+a6hi7NBClnTsy5jwdxtYL3se8MeA81NtlMOVSi5LgxapNRxCZQa7tHTheKV5MQF3JI/TLW9z0am64xKcdw23/fZKByGGQwsar6ywmtMv3QNKEwud/IlpCgWUIys99Zb/m1nUaiuWBogslt4mxda9reeJAydYYd0f2lQUwTEQfs8w7aAOa7mDAE60r2g2dLEwaHLtrJg17xcqB74Gg39/8kOuEGSIEG8INrPd602XNsHcFRp4cV3+tB6oZXC7dBt/RnllaqujLsu6/z5Zrl8++AtONEXqHxijvxD057XkN/1yQ2YxmI69+QTqDkKspWTX0zqK0Ywxe0TpAjNzxuywV0xjSB9/UMWqg+Sh5ItVmL6Sm1FAO3oC0DmBjjrr5fbZkSRDPPwoi1B8KnJQBmAJkCq70azZL6P3INjJeD0SF1/d9Ww/VWV7uZhUvbA4Ul8QdypvQrk9DYDTxsyFoMf5rbn4eDO/blHiirtv8Fs2vJAMBecmjZZNcITKKxlW+EWTWvgv2RcY/8ZFrSpj9uHQI8JzYsGrZv8GU6bQx4mJPgV2H+Y47dkwK1FWlu5kmkyc6vHjhI6mw=
+  file_glob: true
   file: target/releases/*.zip
+  skip_cleanup: true
   on:
     tags: true
 

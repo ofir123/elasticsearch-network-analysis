@@ -1,9 +1,9 @@
 Network Address and Path Analysis for Elasticsearch
 =========================================
-[![Develop Travis Status](https://img.shields.io/travis/matan129/elasticsearch-network-analysis/develop.svg)](https://travis-ci.org/matan129/elasticsearch-network-analysis) 
-[![GitHub release](https://img.shields.io/github/release/matan129/elasticsearch-network-analysis.svg)](https://github.com/matan129/elasticsearch-network-analysis/releases) 
-[![Pull Requests](https://img.shields.io/github/issues-pr-raw/matan129/elasticsearch-network-analysis.svg)](https://github.com/matan129/elasticsearch-network-analysis/pulls)
-[![Project Issues](https://img.shields.io/github/issues-raw/matan129/elasticsearch-network-analysis.svg)](https://github.com/matan129/elasticsearch-network-analysis/issues)
+[![Develop Travis Status](https://img.shields.io/travis/matan129/elasticsearch-network-path-analysis/develop.svg)](https://travis-ci.org/matan129/elasticsearch-network-path-analysis) 
+[![GitHub release](https://img.shields.io/github/release/matan129/elasticsearch-network-path-analysis.svg)](https://github.com/matan129/elasticsearch-network-path-analysis/releases) 
+[![Pull Requests](https://img.shields.io/github/issues-pr-raw/matan129/elasticsearch-network-path-analysis.svg)](https://github.com/matan129/elasticsearch-network-path-analysis/pulls)
+[![Project Issues](https://img.shields.io/github/issues-raw/matan129/elasticsearch-network-path-analysis.svg)](https://github.com/matan129/elasticsearch-network-path-analysis/issues)
  
  
 ## Includes
@@ -16,7 +16,7 @@ For example, it'd split `127.0` to `127` and `0`; it'll also output `127` for `1
 - `path_keywords` analyzer. Splits path-like strings.  
 
 ## Installation
-- Download a release zip from the [releases page](https://github.com/matan129/elasticsearch-network-analysis/releases) matching your ES version
+- Download a release zip from the [releases page](https://github.com/matan129/elasticsearch-network-path-analysis/releases) matching your ES version
 - Run `bin/elasticsearch-plugin install file://<path to zip>` 
 - Restart Elasticsearch 
 
