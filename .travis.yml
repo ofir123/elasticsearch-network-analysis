@@ -10,7 +10,6 @@ deploy:
   file: target/releases/*.zip
   on:
     tags: true
-    repo: matan129/elasticsearch-network-analysis
 
 notifications:
   email:
