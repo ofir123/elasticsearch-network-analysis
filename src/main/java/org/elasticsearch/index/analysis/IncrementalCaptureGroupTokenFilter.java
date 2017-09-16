@@ -11,8 +11,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Very similar to {@link org.apache.lucene.analysis.pattern.PatternCaptureGroupTokenFilter}.
- * TODO: clarify stuff here.
+ * Modified version of {@link org.apache.lucene.analysis.pattern.PatternCaptureGroupTokenFilter} that allows for
+ * incremental matching - if a provided pattern matches a part of the input stream, the scan will continue from that
+ * token's end.
  */
 public final class IncrementalCaptureGroupTokenFilter extends TokenFilter {
 

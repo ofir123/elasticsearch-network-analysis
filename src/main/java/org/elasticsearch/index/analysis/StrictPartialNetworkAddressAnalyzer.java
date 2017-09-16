@@ -22,12 +22,12 @@ public final class StrictPartialNetworkAddressAnalyzer extends BasePatternAnalyz
     private static final String COMBINED_PATTERN;
     private static final String[] MAC_SEPARATORS = new String[] { ":", "-", "_" };
     private static final int MAX_MAC_PART_COUNT = 6;
-    private static final int MIN_MAC_PART_COUNT = 2;
     private static final int MAX_IP_PART_COUNT = 4;
+    private static final int MIN_PART_COUNT = 2;
 
     static {
         List<String> patterns = Lists.newArrayList();
-        for (int i = MAX_MAC_PART_COUNT; i >= MIN_MAC_PART_COUNT; i--) {
+        for (int i = MAX_MAC_PART_COUNT; i >= MIN_PART_COUNT; i--) {
             for (String macSeparator : MAC_SEPARATORS) {
                 patterns.add(rawRepeat(toGroup(MAC_PART), macSeparator, i));
             }
