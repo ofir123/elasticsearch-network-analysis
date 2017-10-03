@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
+import org.assertj.core.api.Assertions;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.Index;
 import org.elasticsearch.plugin.analysis.networkaddress.NetworkAddressPathAnalysisPlugin;
@@ -19,7 +21,7 @@ public abstract class BaseAnalyzerTest extends ESTestCase {
         List<String> actualTokens = runAnalysis(source, analyzer);
 
         // Due to poor imports of ESTestCase...
-        org.assertj.core.api.Assertions.assertThat(expectedTokens).containsExactlyElementsOf(actualTokens);
+        Assertions.assertThat(actualTokens).containsExactly(expectedTokens);
     }
 
     private static Analyzer createTestAnalyzer(String analyzerName) throws IOException {
@@ -33,10 +35,18 @@ public abstract class BaseAnalyzerTest extends ESTestCase {
     private static List<String> runAnalysis(String source, Analyzer analyzer) throws IOException {
         TokenStream ts = analyzer.tokenStream("test", source);
         CharTermAttribute term = ts.addAttribute(CharTermAttribute.class);
+        PositionIncrementAttribute pos = ts.addAttribute(PositionIncrementAttribute.class);
         ts.reset();
 
         List<String> actualTokens = Lists.newArrayList();
+        boolean first = true;
         while (ts.incrementToken()) {
+            if (!first) {
+                Assertions.assertThat(pos.getPositionIncrement()).isEqualTo(1);
+            }
+
+            first = false;
+
             actualTokens.add(term.toString());
         }
 
