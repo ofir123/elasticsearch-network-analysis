@@ -5,6 +5,7 @@ import org.apache.lucene.analysis.TokenStream;
 import org.elasticsearch.common.settings.Settings;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static org.elasticsearch.index.analysis.Patterns.*;
 
@@ -19,13 +20,12 @@ public final class StrictPartialNetworkAddressAnalyzer extends BasePatternAnalyz
 
     public static final String NAME = "strict_partial_network_address";
 
-    private static final String COMBINED_PATTERN;
-    private static final String[] MAC_SEPARATORS = new String[] { ":", "-", "_" };
     private static final int MAX_MAC_PART_COUNT = 6;
     private static final int MAX_IP_PART_COUNT = 4;
     private static final int MIN_PART_COUNT = 2;
+    private static final String COMBINED_PATTERN = createPatterns();
 
-    static {
+    private static String createPatterns() {
         List<String> patterns = Lists.newArrayList();
         for (int i = MAX_MAC_PART_COUNT; i >= MIN_PART_COUNT; i--) {
             for (String macSeparator : MAC_SEPARATORS) {
@@ -37,7 +37,7 @@ public final class StrictPartialNetworkAddressAnalyzer extends BasePatternAnalyz
             }
         }
 
-        COMBINED_PATTERN = combinePatterns(patterns);
+        return combinePatterns(patterns);
     }
 
     public StrictPartialNetworkAddressAnalyzer(Settings settings) {
@@ -57,6 +57,6 @@ public final class StrictPartialNetworkAddressAnalyzer extends BasePatternAnalyz
     @Override
     protected TokenStream applyFilters(TokenStream tokenStream) {
         TokenStream stream = super.applyFilters(tokenStream);
-        return new IncrementalCaptureGroupTokenFilter(stream, this.pattern);
+        return new IncrementalCaptureGroupTokenFilter(stream, NETWORK_ADDRESS_PART);
     }
 }

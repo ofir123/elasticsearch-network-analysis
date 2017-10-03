@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Patterns {
@@ -12,7 +13,10 @@ public class Patterns {
     public static final String MAC_PART = "[a-fA-F0-9][a-fA-F0-9]";
     public static final String IP_PART = "25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?";
     public static final String PATHS_SEPARATORS = "[/\\\\]";
-    public static final String NETWORK_ADDRESS_PART = "[^a-fA-F0-9]";
+    public static final String NETWORK_ADDRESS_SEPARATOR = "[^a-fA-F0-9]";
+    public static final String[] MAC_SEPARATORS = new String[] { ":", "-", "_" };
+    public static final Pattern NETWORK_ADDRESS_PART = Pattern.compile(combinePatterns(toGroup(IP_PART),
+                                                                                       toGroup(MAC_PART)));
 
     public static String repeat(String base, String separator, int count) {
         return combinePatterns(Collections.nCopies(count, base), separator);
