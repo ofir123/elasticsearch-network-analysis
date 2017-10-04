@@ -3,6 +3,7 @@ package org.elasticsearch.index.analysis;
 import org.apache.lucene.analysis.TokenFilter;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apache.lucene.util.CharsRefBuilder;
 
@@ -20,6 +21,7 @@ public final class IncrementalCaptureGroupTokenFilter extends TokenFilter {
 
     private final CharTermAttribute charTermAttr = addAttribute(CharTermAttribute.class);
     private final PositionIncrementAttribute posAttr = addAttribute(PositionIncrementAttribute.class);
+    private final OffsetAttribute offsetAttr = addAttribute(OffsetAttribute.class);
     private final Matcher[] matchers;
     private final CharsRefBuilder spare = new CharsRefBuilder();
     private final int[] groupCounts;
@@ -60,6 +62,7 @@ public final class IncrementalCaptureGroupTokenFilter extends TokenFilter {
             // Each group it considered as 'following' the previous one, allowing 'phrase' matching.
             posAttr.setPositionIncrement(1);
             charTermAttr.copyBuffer(spare.chars(), start, end - start);
+            offsetAttr.setOffset(start, end);
             currentGroup[currentMatcher]++;
 
             return true;
@@ -80,10 +83,8 @@ public final class IncrementalCaptureGroupTokenFilter extends TokenFilter {
         }
 
         if (nextCapture()) {
-            final int start = matchers[currentMatcher]
-                    .start(currentGroup[currentMatcher]);
-            final int end = matchers[currentMatcher]
-                    .end(currentGroup[currentMatcher]);
+            final int start = matchers[currentMatcher].start(currentGroup[currentMatcher]);
+            final int end = matchers[currentMatcher].end(currentGroup[currentMatcher]);
 
             if (start == 0) {
                 charTermAttr.setLength(end);
@@ -93,6 +94,7 @@ public final class IncrementalCaptureGroupTokenFilter extends TokenFilter {
 
             // We want to separate the 'matches', meaning that same-regex groups are sequential, but different matches are not.
             posAttr.setPositionIncrement(2);
+            offsetAttr.setOffset(start, end);
             currentGroup[currentMatcher]++;
         }
 
