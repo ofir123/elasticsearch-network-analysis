@@ -15,7 +15,7 @@ For example, it'd split `127.0` to `127` and `0`; it'll also output `127` for `1
 For example, it'd split `127.0` to `127` and `0`, but it will output *nothing* for `127` as an input.
 - `full_network_address` analyzer - used to search for all the network addresses inside a given document.
 - `path_keywords` analyzer. Splits path-like strings.  
-- `incremental_capture_group_token_filter` - allows for incremental matching. When a provided pattern matches a part of the input stream, the scan will continue from that token's end.
+- `incremental_capture_group` - A modified version of the `pattern_capture` token filter that also increments the tokens' position attribute.
 
 ## Installation
 - Download a release zip from the [releases page](https://github.com/matan129/elasticsearch-network-path-analysis/releases) matching your ES version

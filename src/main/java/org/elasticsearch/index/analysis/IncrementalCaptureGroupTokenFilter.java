@@ -11,9 +11,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Modified version of {@link org.apache.lucene.analysis.pattern.PatternCaptureGroupTokenFilter} that allows for
- * incremental matching - if a provided pattern matches a part of the input stream, the scan will continue from that
- * token's end.
+ * Modified version of {@link org.apache.lucene.analysis.pattern.PatternCaptureGroupTokenFilter} that also increments
+ * the tokens' position attribute.
  */
 public final class IncrementalCaptureGroupTokenFilter extends TokenFilter {
 
@@ -101,7 +100,7 @@ public final class IncrementalCaptureGroupTokenFilter extends TokenFilter {
     }
 
     private boolean nextCapture() {
-        int min_offset = Integer.MAX_VALUE;
+        int minOffset = Integer.MAX_VALUE;
         currentMatcher = -1;
         Matcher matcher;
 
@@ -122,8 +121,8 @@ public final class IncrementalCaptureGroupTokenFilter extends TokenFilter {
                         continue;
                     }
 
-                    if (start < min_offset) {
-                        min_offset = start;
+                    if (start < minOffset) {
+                        minOffset = start;
                         currentMatcher = i;
                     }
 
