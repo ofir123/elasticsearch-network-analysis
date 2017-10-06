@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 /**
  * Modified version of {@link org.apache.lucene.analysis.pattern.PatternCaptureGroupTokenFilter} that also increments
- * the tokens' position attribute.
+ * the tokens' position attribute and sets token offsets.
  */
 public final class IncrementalCaptureGroupTokenFilter extends TokenFilter {
 
