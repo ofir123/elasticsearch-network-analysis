@@ -57,6 +57,6 @@ public final class StrictPartialNetworkAddressAnalyzer extends BasePatternAnalyz
     @Override
     protected TokenStream applyFilters(TokenStream tokenStream) {
         TokenStream stream = super.applyFilters(tokenStream);
-        return new IncrementalCaptureGroupTokenFilter(stream, NETWORK_ADDRESS_PART);
+        return new IncrementalCaptureGroupTokenFilter(stream, pattern);
     }
 }

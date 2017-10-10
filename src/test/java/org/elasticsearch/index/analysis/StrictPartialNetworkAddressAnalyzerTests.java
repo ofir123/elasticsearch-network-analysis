@@ -22,6 +22,10 @@ public class StrictPartialNetworkAddressAnalyzerTests extends BaseAnalyzerTest {
         testAnalyzer(StrictPartialNetworkAddressAnalyzer.NAME, "aa xx");
     }
 
+    public void testStrictPartialNetworkAddressAnalyzerMac() throws Exception {
+        testAnalyzer(StrictPartialNetworkAddressAnalyzer.NAME, "1a:2b:3c:4d:5e:6f", "1a", "2b", "3c", "4d", "5e", "6f");
+    }
+
     public void testStrictPartialNetworkAddressAnalyzerMulti() throws Exception {
         testAnalyzerIgnoringPosition(StrictPartialNetworkAddressAnalyzer.NAME,
                                      "1.2.3\n1.2.30\nAD:cc:xx\n1\naa xx\n1.2",

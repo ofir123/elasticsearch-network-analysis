@@ -62,7 +62,7 @@ public final class IncrementalCaptureGroupTokenFilter extends TokenFilter {
             // Each group it considered as 'following' the previous one, allowing 'phrase' matching.
             posAttr.setPositionIncrement(1);
             charTermAttr.copyBuffer(spare.chars(), start, end - start);
-            offsetAttr.setOffset(start, end);
+            updateOffset(start, end);
             currentGroup[currentMatcher]++;
 
             return true;
@@ -94,11 +94,16 @@ public final class IncrementalCaptureGroupTokenFilter extends TokenFilter {
 
             // We want to separate the 'matches', meaning that same-regex groups are sequential, but different matches are not.
             posAttr.setPositionIncrement(2);
-            offsetAttr.setOffset(start, end);
+            updateOffset(start, end);
             currentGroup[currentMatcher]++;
         }
 
         return true;
+    }
+
+    private void updateOffset(int start, int end) {
+        int base = offsetAttr.startOffset();
+        offsetAttr.setOffset(base + start, base + end);
     }
 
     private boolean nextCapture() {

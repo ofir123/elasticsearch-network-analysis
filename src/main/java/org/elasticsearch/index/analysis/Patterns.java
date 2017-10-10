@@ -15,8 +15,6 @@ public class Patterns {
     public static final String PATHS_SEPARATORS = "[/\\\\]";
     public static final String NETWORK_ADDRESS_SEPARATOR = "[^a-fA-F0-9]";
     public static final String[] MAC_SEPARATORS = new String[] { ":", "-", "_" };
-    public static final Pattern NETWORK_ADDRESS_PART = Pattern.compile(combinePatterns(toGroup(IP_PART),
-                                                                                       toGroup(MAC_PART)));
 
     public static String repeat(String base, String separator, int count) {
         return combinePatterns(Collections.nCopies(count, base), separator);

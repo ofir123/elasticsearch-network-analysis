@@ -36,6 +36,6 @@ public final class NetworkAddressAnalyzer extends BasePatternAnalyzer {
     @Override
     protected TokenStream applyFilters(TokenStream tokenStream) {
         TokenStream stream = super.applyFilters(tokenStream);
-        return new IncrementalCaptureGroupTokenFilter(stream, this.pattern);
+        return new IncrementalCaptureGroupTokenFilter(stream, pattern);
     }
 }
