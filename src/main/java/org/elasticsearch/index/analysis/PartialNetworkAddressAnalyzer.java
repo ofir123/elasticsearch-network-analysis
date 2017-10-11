@@ -12,7 +12,7 @@ public final class PartialNetworkAddressAnalyzer extends BasePatternAnalyzer {
 
     @Override
     protected String defaultPattern() {
-        return Patterns.NETWORK_ADDRESS_PART;
+        return Patterns.NETWORK_ADDRESS_SEPARATOR;
     }
 
     @Override

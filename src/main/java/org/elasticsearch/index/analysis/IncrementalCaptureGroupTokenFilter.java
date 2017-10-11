@@ -3,6 +3,7 @@ package org.elasticsearch.index.analysis;
 import org.apache.lucene.analysis.TokenFilter;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apache.lucene.util.CharsRefBuilder;
 
@@ -11,9 +12,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Modified version of {@link org.apache.lucene.analysis.pattern.PatternCaptureGroupTokenFilter} that allows for
- * incremental matching - if a provided pattern matches a part of the input stream, the scan will continue from that
- * token's end.
+ * Modified version of {@link org.apache.lucene.analysis.pattern.PatternCaptureGroupTokenFilter} that also increments
+ * the tokens' position attribute and sets token offsets.
  */
 public final class IncrementalCaptureGroupTokenFilter extends TokenFilter {
 
@@ -21,6 +21,7 @@ public final class IncrementalCaptureGroupTokenFilter extends TokenFilter {
 
     private final CharTermAttribute charTermAttr = addAttribute(CharTermAttribute.class);
     private final PositionIncrementAttribute posAttr = addAttribute(PositionIncrementAttribute.class);
+    private final OffsetAttribute offsetAttr = addAttribute(OffsetAttribute.class);
     private final Matcher[] matchers;
     private final CharsRefBuilder spare = new CharsRefBuilder();
     private final int[] groupCounts;
@@ -61,6 +62,7 @@ public final class IncrementalCaptureGroupTokenFilter extends TokenFilter {
             // Each group it considered as 'following' the previous one, allowing 'phrase' matching.
             posAttr.setPositionIncrement(1);
             charTermAttr.copyBuffer(spare.chars(), start, end - start);
+            updateOffset(start, end);
             currentGroup[currentMatcher]++;
 
             return true;
@@ -81,10 +83,8 @@ public final class IncrementalCaptureGroupTokenFilter extends TokenFilter {
         }
 
         if (nextCapture()) {
-            final int start = matchers[currentMatcher]
-                    .start(currentGroup[currentMatcher]);
-            final int end = matchers[currentMatcher]
-                    .end(currentGroup[currentMatcher]);
+            final int start = matchers[currentMatcher].start(currentGroup[currentMatcher]);
+            final int end = matchers[currentMatcher].end(currentGroup[currentMatcher]);
 
             if (start == 0) {
                 charTermAttr.setLength(end);
@@ -94,14 +94,20 @@ public final class IncrementalCaptureGroupTokenFilter extends TokenFilter {
 
             // We want to separate the 'matches', meaning that same-regex groups are sequential, but different matches are not.
             posAttr.setPositionIncrement(2);
+            updateOffset(start, end);
             currentGroup[currentMatcher]++;
         }
 
         return true;
     }
 
+    private void updateOffset(int start, int end) {
+        int base = offsetAttr.startOffset();
+        offsetAttr.setOffset(base + start, base + end);
+    }
+
     private boolean nextCapture() {
-        int min_offset = Integer.MAX_VALUE;
+        int minOffset = Integer.MAX_VALUE;
         currentMatcher = -1;
         Matcher matcher;
 
@@ -122,8 +128,8 @@ public final class IncrementalCaptureGroupTokenFilter extends TokenFilter {
                         continue;
                     }
 
-                    if (start < min_offset) {
-                        min_offset = start;
+                    if (start < minOffset) {
+                        minOffset = start;
                         currentMatcher = i;
                     }
 
