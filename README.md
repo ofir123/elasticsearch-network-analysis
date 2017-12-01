@@ -2,13 +2,14 @@ Network Address Analysis for ElasticSearch
 =========================================
 
 
-    --------------------------------------------------
-    | NetworkAddress Analysis Plugin | ElasticSearch |
-    --------------------------------------------------
-    | 5.6							 | 5.6.3		 |
-	| 5.3                            | 5.3.3         |
-	| 2.0							 | 2.3.4		 |
-    --------------------------------------------------
+    ---------------------------------------------------
+    | Network Address Analysis Plugin | ElasticSearch |
+    ---------------------------------------------------
+    | 6.0                             | 6.0.0         |
+	| 5.6                             | 5.6.3         |
+    | 5.3                             | 5.3.3         |
+    | 2.0                             | 2.3.4         |
+    ---------------------------------------------------
 
 
 The plugin includes a `path_keywords` analyzer, a `network_address` analyzer , a `partial_network_address` analyzer, a `full_network_address` analyzer 
