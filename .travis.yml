@@ -1,0 +1,23 @@
+language: java
+jdk: oraclejdk8
+install: true
+sudo: false
+
+before_deploy:
+- mvn package
+
+deploy:
+  provider: releases
+  api_key:
+    secure: FggqgObvNpBRMVcjJu2Ys6GtTF7wJ/ihZeRtxhp6XPym22V4L8dnoyly73y/R5Sn8nBnPr4WtRDzv15o0EX8hP+GgQ8bbCkfdC8sdg1VZmze6uE2Er4/3g778snlXQUpvRQ0EbjlWdFA0UZ46vER2JkyUAMrz+n+TASokXupxgCoLT1wZbl7323QwZ1sDzsjkBaY5yHuQNL8Gc0HfVOIGJCF8OYyD334HRxDIQrWVEOPbi4qxbq9Le571VfkMCnyDgoo0zrFRtJL/zslxCTDZ9Kt9mmWRmXDW0WQGNuAqY1gkoIfjCjrBSEUAvJH0wIotLvfKArtBDf9EjQthrYoBBM3BkGzEa4Rr2GTH/uwfMRM8Jq77lO3l2z2dgittsSkbM+s2yRmw64/SmE5OkSX45hWchahuDDDUU14PcmrZMm8ApVOQaZIQLoe4JYxwirT90N82c/ZOsU40+r/0MHtLH05bn12ADbjOog9b4880ji5jAf248nI/oCgOKNZzGH3JPe8Uo43eUuaxUzGlbWjuRhg1zfxZpmHnfIU89jJux/JZ0yNi/qVWTcWOHc+/sRAwzrsRISWxK8XYlcnbOuAJ3AESTRSCapwEEbmDTNn4Sr510AFABPwhWktFAHLWvhQnDa3CCai+gb47HQg6rLkN4cC+VuyWEfmMGM+MPljEu4=
+  file_glob: true
+  file: target/releases/elasticsearch-network-analysis*.zip
+  skip_cleanup: true
+  on:
+    repo: ofir123/elasticsearch-network-analysis
+    tags: true
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always

@@ -2,9 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<description>An Elasticsearch plugin for network address analysis</description>
+	<description>An Elasticsearch plugin for network address and path analysis</description>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.ofir123</groupId>
+    <groupId>com.elasticsearch.networkanalysis</groupId>
     <artifactId>elasticsearch-network-analysis</artifactId>
     <version>6.0</version>
     <packaging>jar</packaging>
@@ -32,8 +32,8 @@
     </scm>
 
     <properties>
-        <elasticsearch.version>6.0.0</elasticsearch.version>
-        <lucene.version>7.0.1</lucene.version>
+        <elasticsearch.version>6.2.2</elasticsearch.version>
+        <lucene.version>7.2.1</lucene.version>
 		<elasticsearch.assembly.descriptor>${project.basedir}/src/main/resources/plugin-metadata/plugin-assembly.xml</elasticsearch.assembly.descriptor>
         <elasticsearch.plugin.classname>org.elasticsearch.plugin.analysis.networkaddress.AnalysisNetworkAddressPlugin</elasticsearch.plugin.classname>
         <elasticsearch.plugin.name>elasticsearch-network-analysis</elasticsearch.plugin.name>
@@ -87,6 +87,20 @@
         	<scope>test</scope>
         </dependency>
         
+		<dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>23.0</version>
+			<scope>test</scope>
+        </dependency>
+		
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.8.0</version>
+            <scope>test</scope>
+        </dependency>
+		
     </dependencies>
 
     <build>        
