@@ -5,7 +5,6 @@ import org.apache.lucene.analysis.TokenStream;
 import org.elasticsearch.common.settings.Settings;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 import static org.elasticsearch.index.analysis.Patterns.*;
 
