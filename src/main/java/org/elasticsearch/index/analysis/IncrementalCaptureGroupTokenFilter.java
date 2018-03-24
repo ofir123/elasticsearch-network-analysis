@@ -1,187 +1,155 @@
 package org.elasticsearch.index.analysis;
 
+import org.apache.lucene.analysis.TokenFilter;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
+import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
+import org.apache.lucene.util.CharsRefBuilder;
+
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.lucene.analysis.TokenFilter;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
-import org.apache.lucene.util.CharsRefBuilder;
-
 /**
- * CaptureGroup uses Java regexes to emit multiple tokens - one for each capture
- * group in one or more patterns.
- *
- * <p>
- * For example, a pattern like:
- * </p>
- *
- * <p>
- * <code>"(https?://([a-zA-Z\-_0-9.]+))"</code>
- * </p>
- *
- * <p>
- * when matched against the string "http://www.foo.com/index" would return the
- * tokens "https://www.foo.com" and "www.foo.com".
- * </p>
- *
- * <p>
- * If none of the patterns match, or if preserveOriginal is true, the original
- * token will be preserved.
- * </p>
- * <p>
- * Each pattern is matched as often as it can be, so the pattern
- * <code> "(...)"</code>, when matched against <code>"abcdefghi"</code> would
- * produce <code>["abc","def","ghi"]</code>
- * </p>
- * <p>
- * A camelCaseFilter could be written as:
- * </p>
- * <p>
- * <code>
- *   "([A-Z]{2,})",
- *   "(?&lt;![A-Z])([A-Z][a-z]+)",
- *   "(?:^|\\b|(?&lt;=[0-9_])|(?&lt;=[A-Z]{2}))([a-z]+)",
- *   "([0-9]+)"
- * </code>
- * </p>
- * <p>
- * plus if {@link #preserveOriginal} is true, it would also return
- * <code>"camelCaseFilter"</code>
- * </p>
+ * Modified version of {@link org.apache.lucene.analysis.pattern.PatternCaptureGroupTokenFilter} that also increments
+ * the tokens' position attribute and sets token offsets.
  */
 public final class IncrementalCaptureGroupTokenFilter extends TokenFilter {
 
-  private final CharTermAttribute charTermAttr = addAttribute(CharTermAttribute.class);
-  private final PositionIncrementAttribute posAttr = addAttribute(PositionIncrementAttribute.class);
-  private State state;
-  private final Matcher[] matchers;
-  private final CharsRefBuilder spare = new CharsRefBuilder();
-  private final int[] groupCounts;
-  private final boolean preserveOriginal;
-  private int[] currentGroup;
-  private int currentMatcher;
+    public static final String NAME = "incremental_capture_group";
 
-  /**
-   * @param input
-   *          the input {@link TokenStream}
-   * @param preserveOriginal
-   *          set to true to return the original token even if one of the
-   *          patterns matches
-   * @param patterns
-   *          an array of {@link Pattern} objects to match against each token
-   */
+    private final CharTermAttribute charTermAttr = addAttribute(CharTermAttribute.class);
+    private final PositionIncrementAttribute posAttr = addAttribute(PositionIncrementAttribute.class);
+    private final OffsetAttribute offsetAttr = addAttribute(OffsetAttribute.class);
+    private final Matcher[] matchers;
+    private final CharsRefBuilder spare = new CharsRefBuilder();
+    private final int[] groupCounts;
 
-  public IncrementalCaptureGroupTokenFilter(TokenStream input, Pattern... patterns) {
-    super(input);
-    this.preserveOriginal = false;
-    this.matchers = new Matcher[patterns.length];
-    this.groupCounts = new int[patterns.length];
-    this.currentGroup = new int[patterns.length];
-    for (int i = 0; i < patterns.length; i++) {
-      this.matchers[i] = patterns[i].matcher("");
-      this.groupCounts[i] = this.matchers[i].groupCount();
-      this.currentGroup[i] = -1;
-    }
-  }
+    private State state;
+    private int[] currentGroup;
+    private int currentMatcher;
 
-  private boolean nextCapture() {
-    int min_offset = Integer.MAX_VALUE;
-    currentMatcher = -1;
-    Matcher matcher;
+    /**
+     * @param input    the input {@link TokenStream}
+     * @param patterns an array of {@link Pattern} objects to match against each token
+     */
+    public IncrementalCaptureGroupTokenFilter(TokenStream input, Pattern... patterns) {
+        super(input);
 
-    for (int i = 0; i < matchers.length; i++) {
-      matcher = matchers[i];
-      if (currentGroup[i] == -1) {
-        currentGroup[i] = matcher.find() ? 1 : 0;
-      }
-      if (currentGroup[i] != 0) {
-        while (currentGroup[i] < groupCounts[i] + 1) {
-          final int start = matcher.start(currentGroup[i]);
-          final int end = matcher.end(currentGroup[i]);
-          if (start == end || preserveOriginal && start == 0
-              && spare.length() == end) {
-            currentGroup[i]++;
-            continue;
-          }
-          if (start < min_offset) {
-            min_offset = start;
-            currentMatcher = i;
-          }
-          break;
+        this.matchers = new Matcher[patterns.length];
+        this.groupCounts = new int[patterns.length];
+        this.currentGroup = new int[patterns.length];
+
+        for (int i = 0; i < patterns.length; i++) {
+            this.matchers[i] = patterns[i].matcher("");
+            this.groupCounts[i] = this.matchers[i].groupCount();
+            this.currentGroup[i] = -1;
         }
-        if (currentGroup[i] == groupCounts[i] + 1) {
-          currentGroup[i] = -1;
-          i--;
+    }
+
+    @Override
+    public boolean incrementToken() throws IOException {
+        if (currentMatcher != -1 && nextCapture()) {
+            assert state != null;
+
+            clearAttributes();
+            restoreState(state);
+
+            final int start = matchers[currentMatcher].start(currentGroup[currentMatcher]);
+            final int end = matchers[currentMatcher].end(currentGroup[currentMatcher]);
+
+            // Each group it considered as 'following' the previous one, allowing 'phrase' matching.
+            posAttr.setPositionIncrement(1);
+            charTermAttr.copyBuffer(spare.chars(), start, end - start);
+            updateOffset(start, end);
+            currentGroup[currentMatcher]++;
+
+            return true;
         }
-      }
-    }
-    return currentMatcher != -1;
-  }
 
-  @Override
-  public boolean incrementToken() throws IOException {
+        if (!input.incrementToken()) {
+            return false;
+        }
 
-    if (currentMatcher != -1 && nextCapture()) {
-      assert state != null;
-      clearAttributes();
-      restoreState(state);
-      final int start = matchers[currentMatcher]
-          .start(currentGroup[currentMatcher]);
-      final int end = matchers[currentMatcher]
-          .end(currentGroup[currentMatcher]);
+        char[] buffer = charTermAttr.buffer();
+        int length = charTermAttr.length();
+        spare.copyChars(buffer, 0, length);
+        state = captureState();
 
-      // Each group it considered as 'following' the previous one, allowing 'phrase' matching.
-      posAttr.setPositionIncrement(1);
-      charTermAttr.copyBuffer(spare.chars(), start, end - start);
-      currentGroup[currentMatcher]++;
-      return true;
-    }
+        for (int i = 0; i < matchers.length; i++) {
+            matchers[i].reset(spare.get());
+            currentGroup[i] = -1;
+        }
 
-    if (!input.incrementToken()) {
-      return false;
-    }
+        if (nextCapture()) {
+            final int start = matchers[currentMatcher].start(currentGroup[currentMatcher]);
+            final int end = matchers[currentMatcher].end(currentGroup[currentMatcher]);
 
-    char[] buffer = charTermAttr.buffer();
-    int length = charTermAttr.length();
-    spare.copyChars(buffer, 0, length);
-    state = captureState();
+            if (start == 0) {
+                charTermAttr.setLength(end);
+            } else {
+                charTermAttr.copyBuffer(spare.chars(), start, end - start);
+            }
 
-    for (int i = 0; i < matchers.length; i++) {
-      matchers[i].reset(spare.get());
-      currentGroup[i] = -1;
+            // We want to separate the 'matches', meaning that same-regex groups are sequential, but different matches are not.
+            posAttr.setPositionIncrement(2);
+            updateOffset(start, end);
+            currentGroup[currentMatcher]++;
+        }
+
+        return true;
     }
 
-    if (preserveOriginal) {
-      currentMatcher = 0;
-    } else if (nextCapture()) {
-      final int start = matchers[currentMatcher]
-          .start(currentGroup[currentMatcher]);
-      final int end = matchers[currentMatcher]
-          .end(currentGroup[currentMatcher]);
-
-      // If we start at 0 we can simply set the length and save the copy
-      if (start == 0) {
-        charTermAttr.setLength(end);
-      } else {
-        charTermAttr.copyBuffer(spare.chars(), start, end - start);
-      }
-      
-      // We want to separate the 'matches', meaning that same-regex groups are sequential, but different matches are not.
-      posAttr.setPositionIncrement(2);
-      currentGroup[currentMatcher]++;
+    private void updateOffset(int start, int end) {
+        int base = offsetAttr.startOffset();
+        offsetAttr.setOffset(base + start, base + end);
     }
-    return true;
 
-  }
+    private boolean nextCapture() {
+        int minOffset = Integer.MAX_VALUE;
+        currentMatcher = -1;
+        Matcher matcher;
 
-  @Override
-  public void reset() throws IOException {
-    super.reset();
-    state = null;
-    currentMatcher = -1;
-  }
+        for (int i = 0; i < matchers.length; i++) {
+            matcher = matchers[i];
 
+            if (currentGroup[i] == -1) {
+                currentGroup[i] = matcher.find() ? 1 : 0;
+            }
+
+            if (currentGroup[i] != 0) {
+                while (currentGroup[i] < groupCounts[i] + 1) {
+                    final int start = matcher.start(currentGroup[i]);
+                    final int end = matcher.end(currentGroup[i]);
+
+                    if (start == end) {
+                        currentGroup[i]++;
+                        continue;
+                    }
+
+                    if (start < minOffset) {
+                        minOffset = start;
+                        currentMatcher = i;
+                    }
+
+                    break;
+                }
+
+                if (currentGroup[i] == groupCounts[i] + 1) {
+                    currentGroup[i] = -1;
+                    i--;
+                }
+            }
+        }
+
+        return currentMatcher != -1;
+    }
+
+    @Override
+    public void reset() throws IOException {
+        super.reset();
+        state = null;
+        currentMatcher = -1;
+    }
 }
